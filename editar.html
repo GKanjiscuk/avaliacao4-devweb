@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Portfólio</title>
+    <link rel="stylesheet" href="assets/css/navegacao-inicio.css" />
+    <link rel="stylesheet" href="assets/css/sobre-mim.css" />
+    <link rel="stylesheet" href="assets/css/projetos.css" />
+    <link rel="stylesheet" href="assets/css/habilidades.css" />
+    <link rel="stylesheet" href="assets/css/footer.css" />
+    <link rel="stylesheet" href="assets/css/edit.css" />
+  </head>
+  <body>
+    <input
+      id="close-menu"
+      class="close-menu"
+      type="checkbox"
+      aria-label="close-menu"
+      role="button"
+    />
+    <label class="close-menu-label" for="close-menu" title="close menu"></label>
+    <div class="barra">
+      <div class="menu-centro">
+        <div class="barra-conteiner centralizador">
+          <div class="logo esquerda">
+            <a href="/"><img src="assets/img/GK.png" alt="logo" /></a>
+          </div>
+          <nav class="direita">
+            <ul onclick="getElementById('close-menu').checked=false;">
+              <li><a href="#inicio">Início</a></li>
+              <li><a href="editar.html">Editar</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <section id="edicao">
+      <h2 class="titulo-edicao">Painel de Edição do Portfólio</h2>
+
+      <a href="index.html" class="back-to-portfolio">Voltar para o Portfólio</a>
+      <p class="status-message" id="global-status-message"></p>
+      <div class="edit-box" id="edit-sobre-mim-box">
+        <h2 class="edit-box-title">Sobre Mim</h2>
+        <form id="form-sobre-mim">
+          <label for="sobre-mim-texto">Texto "Sobre Mim":</label>
+          <textarea id="sobre-mim-texto" rows="10" required></textarea>
+          <button type="submit">Salvar "Sobre Mim"</button>
+        </form>
+      </div>
+      <div class="edit-box" id="edit-hard-skills-box">
+        <h2 class="edit-box-title">Hard Skills</h2>
+        <div id="hardskills-list-container" class="item-list-container">
+          <p class="loading-message">Carregando Hard Skills...</p>
+        </div>
+        <h3 class="edit-box-subtitle">Adicionar/Editar Hard Skill</h3>
+        <form id="form-hardskill" class="add-edit-form">
+          <input type="hidden" id="hardskill-id" />
+          <label for="hardskill-nome">Nome da Hard Skill:</label>
+          <input type="text" id="hardskill-nome" required />
+          <label for="hardskill-descricao">Descrição:</label>
+          <textarea id="hardskill-descricao" rows="3" required></textarea>
+          <div class="botoes">
+            <button type="submit" id="btn-save-hardskill">
+              Adicionar/Salvar
+            </button>
+            <button
+              type="button"
+              id="btn-cancel-hardskill"
+              class="cancel-button"
+            >
+              Cancelar Edição
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="edit-box" id="edit-soft-skills-box">
+        <h2 class="edit-box-title">Soft Skills</h2>
+        <div id="softskills-list-container" class="item-list-container">
+          <p class="loading-message">Carregando Soft Skills...</p>
+        </div>
+        <h3 class="edit-box-subtitle">Adicionar/Editar Soft Skill</h3>
+        <form id="form-softskill" class="add-edit-form">
+          <input type="hidden" id="softskill-id" />
+          <label for="softskill-nome">Nome da Soft Skill:</label>
+          <input type="text" id="softskill-nome" required />
+          <div class="botoes">
+            <button type="submit" id="btn-save-softskill">
+              Adicionar/Salvar
+            </button>
+            <button
+              type="button"
+              id="btn-cancel-softskill"
+              class="cancel-button"
+            >
+              Cancelar Edição
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="edit-box" id="edit-certificacoes-box">
+        <h2 class="edit-box-title">Certificações</h2>
+        <div id="certificacoes-list-container" class="item-list-container">
+          <p class="loading-message">Carregando Certificações...</p>
+        </div>
+        <h3 class="edit-box-subtitle">Adicionar/Editar Certificação</h3>
+        <form id="form-certificacao" class="add-edit-form">
+          <input type="hidden" id="certificacao-id" />
+          <label for="certificacao-nome">Nome da Certificação:</label>
+          <textarea id="certificacao-nome" rows="3" required></textarea>
+          <div class="botoes">
+            <button type="submit" id="btn-save-certificacao">
+              Adicionar/Salvar
+            </button>
+            <button
+              type="button"
+              id="btn-cancel-certificacao"
+              class="cancel-button"
+            >
+              Cancelar Edição
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="edit-box" id="edit-projetos-box">
+        <h2 class="edit-box-title">Projetos</h2>
+        <div id="projetos-list-container" class="item-list-container">
+          <p class="loading-message">Carregando Projetos...</p>
+        </div>
+        <h3 class="edit-box-subtitle">Adicionar/Editar Projeto</h3>
+        <form id="form-projeto" class="add-edit-form">
+          <input type="hidden" id="projeto-id" />
+          <label for="projeto-link">Link do Projeto:</label>
+          <input
+            type="url"
+            id="projeto-link"
+            placeholder="https://exemplo.com/projeto"
+            required
+          />
+          <div class="botoes">
+            <button type="submit" id="btn-save-projeto">
+              Adicionar/Salvar
+            </button>
+            <button type="button" id="btn-cancel-projeto" class="cancel-button">
+              Cancelar Edição
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-conteiner">
+        <div class="contato-cred">
+          Feito por Giovanni Kanjiscuk <br />
+          E-mail para contato: giovanni.kanjiscuk@gmail.com
+          <br />
+          <br />
+          Avatar South Park: créditos ao sp-studio.de <br />
+        </div>
+        <div class="icons">
+          <div class="links links1">
+            <a href="https://github.com/GKanjiscuk" target="_blank">
+              <img
+                class="transparente"
+                src="assets/img/githubfooter.svg"
+                alt="github-icon"
+              />
+            </a>
+          </div>
+          <div class="links links2">
+            <a
+              href="https://www.linkedin.com/in/Giovanni-Kanjiscuk/"
+              target="_blank"
+            >
+              <img
+                class="transparente"
+                src="assets/img/linkedinff.svg"
+                alt="github-icon"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/js/edit-script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+*{
+    box-sizing: border-box;
+}
+
+h2{
+    font-size: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+h3{
+    font-size: 18px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.botoes{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+}
+
+
+#edicao{
+    background: linear-gradient(63.13deg, #000000 51.04%, #220202 51.05%);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    z-index: 0;
+    padding: 100px;
+    padding-top: 150px;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.barra{
+    z-index: 0;
+    
+}
+
+span{
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+button {
+    max-width: 200px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 30px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin: 0.5rem;
+    height: 50px;
+}
+
+.edit-box {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid #444;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    color: #fff;
+    min-width: 575px;
+    width: 800px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    gap: 100px;
+}
+
+.edit-box label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.edit-box input,
+.edit-box textarea {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 1.1rem;
+}
+
+.edit-box input::placeholder,
+.edit-box textarea::placeholder {
+    color: #aaa;
+}
+
+

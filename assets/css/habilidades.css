@@ -1,0 +1,157 @@
+#habilidades {
+    background-color: #220202;
+}
+
+.habilidades {
+    padding-top: 93px;
+}
+
+.habilidades h2 { 
+    text-align: center;
+    padding-bottom: 70px;
+}
+
+.skills-descricao {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    gap:50px;
+    padding-bottom: 70px;
+}
+
+.container-skills {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 37px;
+    max-width: 55%;
+}
+
+.skill-box {
+    height: 106px;
+    width: 106px;
+    background-color: #C4C4C4;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: ease 0.3s;
+}
+
+.skill-box:hover {
+    background-color: white;
+    transform: scale(1.05);
+}
+
+.conteiner-descricao {
+    color: white;
+    font-family: 'Quando', serif;
+    font-size: 20px;
+    max-width: 40%;
+}
+
+.skill-box > img{
+    max-width: 75px; /* Ajuste este valor conforme necessário */
+    max-height: 75px; /* Ajuste este valor conforme necessário */
+    width: 100%; /* Garante que a imagem seja responsiva dentro do seu contêiner */
+    height: auto; /* Mantém a proporção da imagem */
+    display: block; /* Remove espaço extra abaixo da imagem */
+    object-fit: contain;
+}
+
+@media (max-width:1200px) {
+
+    .conteiner-descricao {
+        height: 260px;
+    }
+
+    #habilidades {
+        display: flex;
+        justify-content: center;
+    }
+
+    .skills-descricao {
+        display: flex;
+        flex-direction: column-reverse;
+        /* width: 535px; */
+        margin: 0 auto;
+        gap:50px;
+        padding-bottom: 70px;
+        align-items: center;
+    }
+
+    .skills-descricao p {
+        text-align: center;
+    }
+
+}
+@media (max-width:950px) {
+    .container-skills {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 37px;
+        max-width: 300px;
+    }
+
+    .conteiner-descricao {
+        max-width: 300px;
+    }
+
+}
+
+.skill-box .icones-habilidades {
+    transition: ease-in-out 0.3s;
+}
+
+
+/* .skill-html{
+    background-image: url(../img/html2.svg);
+}
+
+.skill-css {
+    background-image: url(../img/css2.svg);
+}
+
+.skill-js {
+    background-image: url(../img/js2.svg);
+}
+
+.skill-git {
+    background-image: url(../img/git2.svg);
+}
+
+
+.skill-github {
+    background-image: url(../img/github2.svg);
+}
+
+.skill-bootstrap {
+    background-image: url(../img/bootstrap2.svg);
+}
+
+.skill-ts {
+    background-image: url(../img/typescript2.svg);
+}
+
+.skill-react {
+    background-image: url(../img/react.svg);
+}
+
+.skill-python{
+    background-image: url(../img/python-svgrepo-com.svg);
+    background-size: 106px;
+}
+.skill-tailwind{
+    background-image: url(../img/tailwind.svg);
+}
+.skill-node{
+    background-image: url(../img/node.svg);
+} */
+#fundo {
+    fill: red;
+}
+
