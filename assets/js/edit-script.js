@@ -1,11 +1,9 @@
 console.log("edit-script.js carregado!");
 
-const API_BASE_URL = "http://localhost:3000"; // Base URL da sua API
-// const PERFIL_ID = 1; // Removido, pois não será usado como filtro de rota
+const API_BASE_URL = "http://localhost:3000";
 
-let perfilData = null; // Para armazenar os dados do perfil coletados (o loadPerfil ainda pode ser útil para coletar o nome, etc.)
+let perfilData = null;
 
-// === Funções auxiliares para requisições API ===
 async function fetchData(url) {
   try {
     const response = await fetch(url);
@@ -95,7 +93,6 @@ async function deleteData(url) {
   }
 }
 
-// === Função para exibir mensagens de status ===
 const globalStatusMessage = document.getElementById("global-status-message");
 
 function showStatusMessage(message, type = "info") {
@@ -110,12 +107,10 @@ function showStatusMessage(message, type = "info") {
   globalStatusMessage.style.display = "block";
   setTimeout(() => {
     globalStatusMessage.style.display = "none";
-    globalStatusMessage.className = "status-message"; // Resetar classes
-  }, 5000); // Esconde a mensagem após 5 segundos
+    globalStatusMessage.className = "status-message";
+  }, 5000);
 }
 
-// ==============================================================================
-// Variáveis DOM globais
 const formSobreMim = document.getElementById("form-sobre-mim");
 const sobreMimTextoInput = document.getElementById("sobre-mim-texto");
 const hardskillsListContainer = document.getElementById(
@@ -152,17 +147,13 @@ const projetoNomeInput = document.getElementById("projeto-nome");
 const projetoImagemInput = document.getElementById("projeto-imagem");
 const btnCancelProjeto = document.getElementById("btn-cancel-projeto");
 
-// ==============================================================================
-// Lógica para Perfil (Apenas coleta os dados, sem exibição ou edição na página)
-// Mantemos a função, mas a forma de buscar um perfil específico pode depender
-// de como você irá obter o ID do perfil a ser coletado (ex: da URL, de um login).
-// Por enquanto, faremos uma chamada genérica que pode ser ajustada.
+const hardskillImagemInput = document.getElementById("hardskill-imagem");
+
 async function loadPerfil() {
   try {
-    // Se houver apenas um perfil, ou se você quiser o primeiro, pode usar /perfil
     const perfis = await fetchData(`${API_BASE_URL}/perfil`);
     if (perfis && perfis.length > 0) {
-      perfilData = perfis[0]; // Assume que queremos o primeiro perfil se houver vários
+      perfilData = perfis[0];
       console.log("Dados do perfil coletados:", perfilData);
     } else {
       console.warn("Nenhum perfil encontrado no backend.");
@@ -172,18 +163,17 @@ async function loadPerfil() {
   }
 }
 
-// ==============================================================================
-// Lógica para Sobre Mim
 let sobreMimDataId = null;
 
 async function loadSobreMim() {
   try {
     if (!sobreMimTextoInput) return;
 
-    // Agora busca todos os "sobremim" e pega o primeiro (ou o que você quiser)
+    // Sua rota GET é /sobre, que retorna TODOS os textos
     const sobreMimArray = await fetchData(`${API_BASE_URL}/sobre`);
 
     if (Array.isArray(sobreMimArray) && sobreMimArray.length > 0) {
+      // Usa o primeiro item (ajuste se houver múltiplos perfis depois)
       sobreMimTextoInput.value = sobreMimArray[0].texto;
       sobreMimDataId = sobreMimArray[0].id;
     } else {
@@ -195,7 +185,7 @@ async function loadSobreMim() {
       sobreMimDataId = null;
     }
   } catch (error) {
-    // Erro já tratado em fetchData
+    console.error("Erro ao carregar texto 'Sobre Mim':", error);
   }
 }
 
@@ -213,24 +203,20 @@ if (formSobreMim) {
     }
 
     try {
-      // PUT para atualizar um registro existente
-      await putData(`${API_BASE_URL}/sobre`, {
+      await putData(`${API_BASE_URL}/sobre/${sobreMimDataId}`, {
         texto: newText,
       });
       showStatusMessage('Texto "Sobre Mim" salvo com sucesso!', "success");
     } catch (error) {
-      // Erro já tratado em putData
+      console.error("Erro ao atualizar dados (PUT):", error);
+      showStatusMessage("Erro ao salvar 'Sobre Mim'.", "error");
     }
   });
 }
-
-// ==============================================================================
-// Lógica para Hard Skills
 let currentHardskills = [];
 
 async function loadHardSkills() {
   try {
-    // Remove o filtro por perfil_id
     const hardskills = await fetchData(`${API_BASE_URL}/hardskills`);
     currentHardskills = hardskills;
     renderHardSkills(hardskills);
@@ -245,54 +231,36 @@ async function loadHardSkills() {
 if (formHardskill) {
   formHardskill.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const id = hardskillIdInput.value; // Isso captura o ID do campo oculto
+    const id = hardskillIdInput.value;
     const nome = hardskillNomeInput.value;
     const descricao = hardskillDescricaoInput.value;
+    const icone = hardskillImagemInput ? hardskillImagemInput.value : "";
+    const data = { nome, descricao, icone };
 
-    // Dados para enviar no corpo da requisição
-    const data = { nome, descricao };
-    // Para POST, o perfil_id é adicionado ao data. Para PUT, o backend pode ignorá-lo se não precisar no WHERE.
-    // A lógica do frontend já envia perfil_id para POST
-
-    if (id) {
-      // Editando: ID presente no campo oculto
-      try {
-        // A URL para PUT já está correta, usando o ID do item: /hardskills/:id
+    try {
+      if (id) {
         await putData(`${API_BASE_URL}/hardskills/${id}`, data);
         showStatusMessage("Hard Skill atualizada com sucesso!", "success");
-      } catch (error) {
-        // Erro já tratado
-      }
-    } else {
-      // Adicionando: ID ausente
-      try {
-        // Para POST, adicionamos o perfil_id ao objeto de dados
+      } else {
         await postData(`${API_BASE_URL}/hardskills`, {
           ...data,
           perfil_id: perfilData ? perfilData.id : 1,
         });
         showStatusMessage("Hard Skill adicionada com sucesso!", "success");
-      } catch (error) {
-        // Erro já tratado
       }
-    }
-    resetHardskillForm();
-    loadHardSkills();
+      resetHardskillForm();
+      loadHardSkills();
+    } catch (error) {}
   });
 }
 
 function editHardSkill(id) {
   const skillToEdit = currentHardskills.find((s) => s.id == id);
-  if (
-    skillToEdit &&
-    hardskillIdInput &&
-    hardskillNomeInput &&
-    hardskillDescricaoInput &&
-    btnCancelHardskill
-  ) {
+  if (skillToEdit && hardskillIdInput && hardskillNomeInput && hardskillDescricaoInput && btnCancelHardskill) {
     hardskillIdInput.value = skillToEdit.id;
     hardskillNomeInput.value = skillToEdit.nome;
     hardskillDescricaoInput.value = skillToEdit.descricao;
+    if (hardskillImagemInput) hardskillImagemInput.value = skillToEdit.icone || "";
     btnCancelHardskill.style.display = "inline-block";
     document.getElementById("btn-save-hardskill").textContent = "Salvar Edição";
   }
@@ -301,50 +269,42 @@ function editHardSkill(id) {
 async function deleteHardSkill(id) {
   if (confirm("Tem certeza que deseja excluir esta Hard Skill?")) {
     try {
-      // A URL para DELETE já está correta, usando o ID do item: /hardskills/:id
       await deleteData(`${API_BASE_URL}/hardskills/${id}`);
       showStatusMessage("Hard Skill excluída com sucesso!", "success");
       loadHardSkills();
-    } catch (error) {
-      // Erro já tratado
-    }
+    } catch (error) {}
   }
 }
 
-// ... (Restante do código de renderização e reset do formulário de Hard Skills)
 function renderHardSkills(hardskills) {
   if (!hardskillsListContainer) return;
   hardskillsListContainer.innerHTML = "";
   if (hardskills.length === 0) {
-    hardskillsListContainer.innerHTML =
-      '<p class="loading-message">Nenhuma Hard Skill cadastrada.</p>';
+    hardskillsListContainer.innerHTML = '<p class="loading-message">Nenhuma Hard Skill cadastrada.</p>';
     return;
   }
   hardskills.forEach((skill) => {
     const itemDiv = document.createElement("div");
     itemDiv.className = "list-item";
     itemDiv.innerHTML = `
-            <span class="item-text">
-                <strong>${skill.nome}</strong><br>
-                ${skill.descricao}
-            </span>
-            <div class="actions">
-                <button class="edit-button" data-id="${skill.id}">Editar</button>
-                <button class="delete-button" data-id="${skill.id}">Excluir</button>
-            </div>
-        `;
+      <span class="item-text">
+        <strong>${skill.nome}</strong><br>
+        ${skill.descricao}
+        ${skill.imagem_url ? `<br><img src="${skill.imagem_url}" alt="Imagem" style="max-width: 100px; margin-top: 5px;">` : ""}
+      </span>
+      <div class="actions">
+        <button class="edit-button" data-id="${skill.id}">Editar</button>
+        <button class="delete-button" data-id="${skill.id}">Excluir</button>
+      </div>
+    `;
     hardskillsListContainer.appendChild(itemDiv);
   });
   hardskillsListContainer.querySelectorAll(".edit-button").forEach((button) => {
     button.addEventListener("click", (e) => editHardSkill(e.target.dataset.id));
   });
-  hardskillsListContainer
-    .querySelectorAll(".delete-button")
-    .forEach((button) => {
-      button.addEventListener("click", (e) =>
-        deleteHardSkill(e.target.dataset.id)
-      );
-    });
+  hardskillsListContainer.querySelectorAll(".delete-button").forEach((button) => {
+    button.addEventListener("click", (e) => deleteHardSkill(e.target.dataset.id));
+  });
 }
 if (btnCancelHardskill) {
   btnCancelHardskill.addEventListener("click", resetHardskillForm);
@@ -354,18 +314,15 @@ function resetHardskillForm() {
     formHardskill.reset();
     hardskillIdInput.value = "";
     btnCancelHardskill.style.display = "none";
-    document.getElementById("btn-save-hardskill").textContent =
-      "Adicionar/Salvar";
+    document.getElementById("btn-save-hardskill").textContent = "Adicionar/Salvar";
+    if (hardskillImagemInput) hardskillImagemInput.value = "";
   }
 }
 
-// ==============================================================================
-// Lógica para Soft Skills
 let currentSoftskills = [];
 
 async function loadSoftSkills() {
   try {
-    // Remove o filtro por perfil_id
     const softskills = await fetchData(`${API_BASE_URL}/softskills`);
     currentSoftskills = softskills;
     renderSoftSkills(softskills);
@@ -385,24 +342,18 @@ if (formSoftskill) {
     const data = { nome };
 
     if (id) {
-      // Editando
       try {
-        await putData(`${API_BASE_URL}/softskills/${id}`, data); // ID no link
+        await putData(`${API_BASE_URL}/softskills/${id}`, data);
         showStatusMessage("Soft Skill atualizada com sucesso!", "success");
-      } catch (error) {
-        // Erro já tratado
-      }
+      } catch (error) {}
     } else {
-      // Adicionando
       try {
         await postData(`${API_BASE_URL}/softskills`, {
           ...data,
           perfil_id: perfilData ? perfilData.id : 1,
-        }); // Assume perfil_id 1
+        });
         showStatusMessage("Soft Skill adicionada com sucesso!", "success");
-      } catch (error) {
-        // Erro já tratado
-      }
+      } catch (error) {}
     }
     resetSoftskillForm();
     loadSoftSkills();
@@ -427,16 +378,13 @@ function editSoftSkill(id) {
 async function deleteSoftSkill(id) {
   if (confirm("Tem certeza que deseja excluir esta Soft Skill?")) {
     try {
-      await deleteData(`${API_BASE_URL}/softskills/${id}`); // ID no link
+      await deleteData(`${API_BASE_URL}/softskills/${id}`);
       showStatusMessage("Soft Skill excluída com sucesso!", "success");
       loadSoftSkills();
-    } catch (error) {
-      // Erro já tratado
-    }
+    } catch (error) {}
   }
 }
 
-// ... (Restante do código de renderização e reset do formulário de Soft Skills)
 function renderSoftSkills(softskills) {
   if (!softskillsListContainer) return;
   softskillsListContainer.innerHTML = "";
@@ -481,13 +429,10 @@ function resetSoftskillForm() {
   }
 }
 
-// ==============================================================================
-// Lógica para Certificações
 let currentCertificacoes = [];
 
 async function loadCertificacoes() {
   try {
-    // Remove o filtro por perfil_id
     const certificacoes = await fetchData(`${API_BASE_URL}/certificacoes`);
     currentCertificacoes = certificacoes;
     renderCertificacoes(certificacoes);
@@ -507,24 +452,18 @@ if (formCertificacao) {
     const data = { nome };
 
     if (id) {
-      // Editando
       try {
-        await putData(`${API_BASE_URL}/certificacoes/${id}`, data); // ID no link
+        await putData(`${API_BASE_URL}/certificacoes/${id}`, data);
         showStatusMessage("Certificação atualizada com sucesso!", "success");
-      } catch (error) {
-        // Erro já tratado
-      }
+      } catch (error) {}
     } else {
-      // Adicionando
       try {
         await postData(`${API_BASE_URL}/certificacoes`, {
           ...data,
           perfil_id: perfilData ? perfilData.id : 1,
-        }); // Assume perfil_id 1
+        });
         showStatusMessage("Certificação adicionada com sucesso!", "success");
-      } catch (error) {
-        // Erro já tratado
-      }
+      } catch (error) {}
     }
     resetCertificacaoForm();
     loadCertificacoes();
@@ -550,16 +489,13 @@ function editCertificacao(id) {
 async function deleteCertificacao(id) {
   if (confirm("Tem certeza que deseja excluir esta Certificação?")) {
     try {
-      await deleteData(`${API_BASE_URL}/certificacoes/${id}`); // ID no link
+      await deleteData(`${API_BASE_URL}/certificacoes/${id}`);
       showStatusMessage("Certificação excluída com sucesso!", "success");
       loadCertificacoes();
-    } catch (error) {
-      // Erro já tratado
-    }
+    } catch (error) {}
   }
 }
 
-// ... (Restante do código de renderização e reset do formulário de Certificações)
 function renderCertificacoes(certificacoes) {
   if (!certificacoesListContainer) return;
   certificacoesListContainer.innerHTML = "";
@@ -608,13 +544,10 @@ function resetCertificacaoForm() {
   }
 }
 
-// ==============================================================================
-// Lógica para Projetos
 let currentProjetos = [];
 
 async function loadProjetos() {
   try {
-    // Remove o filtro por perfil_id
     const projetos = await fetchData(`${API_BASE_URL}/projetos`);
     currentProjetos = projetos;
     renderProjetos(projetos);
@@ -631,30 +564,23 @@ if (formProjeto) {
     e.preventDefault();
     const id = projetoIdInput.value;
     const link = projetoLinkInput.value;
-    const nome = projetoNomeInput ? projetoNomeInput.value : "";
     const imagem_url = projetoImagemInput ? projetoImagemInput.value : "";
 
-    const data = { link, nome, imagem_url };
+    const data = { link, imagem_url };
 
     if (id) {
-      // Editando
       try {
-        await putData(`${API_BASE_URL}/projetos/${id}`, data); // ID no link
+        await putData(`${API_BASE_URL}/projetos/${id}`, data);
         showStatusMessage("Projeto atualizado com sucesso!", "success");
-      } catch (error) {
-        // Erro já tratado
-      }
+      } catch (error) {}
     } else {
-      // Adicionando
       try {
         await postData(`${API_BASE_URL}/projetos`, {
           ...data,
           perfil_id: perfilData ? perfilData.id : 1,
-        }); // Assume perfil_id 1
+        });
         showStatusMessage("Projeto adicionado com sucesso!", "success");
-      } catch (error) {
-        // Erro já tratado
-      }
+      } catch (error) {}
     }
     resetProjetoForm();
     loadProjetos();
@@ -666,7 +592,6 @@ function editProjeto(id) {
   if (projetoToEdit && projetoIdInput && projetoLinkInput && btnCancelProjeto) {
     projetoIdInput.value = projetoToEdit.id;
     projetoLinkInput.value = projetoToEdit.link;
-    if (projetoNomeInput) projetoNomeInput.value = projetoToEdit.nome || "";
     if (projetoImagemInput)
       projetoImagemInput.value = projetoToEdit.imagem_url || "";
 
@@ -678,16 +603,13 @@ function editProjeto(id) {
 async function deleteProjeto(id) {
   if (confirm("Tem certeza que deseja excluir este Projeto?")) {
     try {
-      await deleteData(`${API_BASE_URL}/projetos/${id}`); // ID no link
+      await deleteData(`${API_BASE_URL}/projetos/${id}`);
       showStatusMessage("Projeto excluído com sucesso!", "success");
       loadProjetos();
-    } catch (error) {
-      // Erro já tratado
-    }
+    } catch (error) {}
   }
 }
 
-// ... (Restante do código de renderização e reset do formulário de Projetos)
 function renderProjetos(projetos) {
   if (!projetosListContainer) return;
   projetosListContainer.innerHTML = "";
@@ -742,10 +664,7 @@ function resetProjetoForm() {
   }
 }
 
-// ==============================================================================
-// Funções de Inicialização
 document.addEventListener("DOMContentLoaded", () => {
-  // Definir min-height para #edicao
   const edicaoDiv = document.getElementById("edicao");
   if (edicaoDiv) {
     edicaoDiv.style.minHeight = "100vh";
@@ -754,8 +673,7 @@ document.addEventListener("DOMContentLoaded", () => {
     edicaoDiv.style.alignItems = "center";
   }
 
-  // Carregar todos os dados ao iniciar a página
-  loadPerfil(); // Ainda pode ser útil para pegar um perfil padrão, mesmo sem ID fixo na URL
+  loadPerfil();
   loadSobreMim();
   loadHardSkills();
   loadSoftSkills();

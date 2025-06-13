@@ -89,16 +89,17 @@ app.delete('/sobre/:id', (req, res) => {
 });
 
 // ====== HARD SKILLS ======
+// POST: Adiciona nova Hard Skill com 'icone'
 app.post('/hardskills', (req, res) => {
-  const { nome, descricao, perfil_id } = req.body;
-  const sql = 'INSERT INTO hardskill (nome, descricao, perfil_id) VALUES (?, ?, ?)';
-  db.query(sql, [nome, descricao, perfil_id], (err, result) => {
+  const { nome, descricao, perfil_id, icone } = req.body;
+  const sql = 'INSERT INTO hardskill (nome, descricao, perfil_id, icone) VALUES (?, ?, ?, ?)';
+  db.query(sql, [nome, descricao, perfil_id, icone], (err, result) => {
     if (err) return res.status(500).send(err);
-    res.status(201).send({ id: result.insertId, nome, descricao, perfil_id });
+    res.status(201).send({ id: result.insertId, nome, descricao, perfil_id, icone });
   });
 });
 
-// GET: Retorna TODAS as hard skills (sem filtro)
+// GET: Retorna TODAS as hard skills
 app.get('/hardskills', (req, res) => {
   db.query('SELECT * FROM hardskill', (err, results) => {
     if (err) return res.status(500).send(err);
@@ -106,21 +107,20 @@ app.get('/hardskills', (req, res) => {
   });
 });
 
-// PUT: Atualiza por ID (REMOVIDO perfil_id do WHERE)
+// PUT: Atualiza Hard Skill por ID, incluindo o campo 'icone'
 app.put('/hardskills/:id', (req, res) => {
-  const { nome, descricao } = req.body; // perfil_id pode ser enviado no body, mas não é usado na query para localizar
-  const sql = 'UPDATE hardskill SET nome = ?, descricao = ? WHERE id = ?';
-  db.query(sql, [nome, descricao, req.params.id], (err, results) => {
+  const { nome, descricao, icone } = req.body;
+  const sql = 'UPDATE hardskill SET nome = ?, descricao = ?, icone = ? WHERE id = ?';
+  db.query(sql, [nome, descricao, icone, req.params.id], (err, results) => {
     if (err) return res.status(500).send(err);
     if (results.affectedRows === 0) {
       return res.status(404).send({ mensagem: 'Hard Skill não encontrada.' });
     }
-    // O retorno pode incluir perfil_id se você quiser, mas não é usado na lógica de update
-    res.send({ id: req.params.id, nome, descricao }); 
+    res.send({ id: req.params.id, nome, descricao, icone });
   });
 });
 
-// DELETE: Deleta por ID (REMOVIDO perfil_id do WHERE)
+// DELETE: Deleta por ID
 app.delete('/hardskills/:id', (req, res) => {
   const sql = 'DELETE FROM hardskill WHERE id = ?';
   db.query(sql, [req.params.id], (err, results) => {
@@ -131,6 +131,7 @@ app.delete('/hardskills/:id', (req, res) => {
     res.send({ mensagem: 'Hard Skill excluída com sucesso' });
   });
 });
+
 
 // ====== SOFT SKILLS ======
 app.post('/softskills', (req, res) => {
@@ -177,11 +178,11 @@ app.delete('/softskills/:id', (req, res) => {
 
 // ====== PROJETOS ======
 app.post('/projetos', (req, res) => {
-  const { link, nome, imagem_url, perfil_id } = req.body;
-  const sql = 'INSERT INTO projeto (link, nome, imagem_url, perfil_id) VALUES (?, ?, ?, ?)';
-  db.query(sql, [link, nome, imagem_url, perfil_id], (err, result) => {
+  const { link, imagem_url, perfil_id } = req.body;
+  const sql = 'INSERT INTO projeto (link, imagem_url, perfil_id) VALUES (?, ?, ?)';
+  db.query(sql, [link, imagem_url, perfil_id], (err, result) => {
     if (err) return res.status(500).send(err);
-    res.status(201).send({ id: result.insertId, link, nome, imagem_url, perfil_id });
+    res.status(201).send({ id: result.insertId, link, imagem_url, perfil_id });
   });
 });
 
@@ -195,14 +196,14 @@ app.get('/projetos', (req, res) => {
 
 // PUT: Atualiza por ID (REMOVIDO perfil_id do WHERE)
 app.put('/projetos/:id', (req, res) => {
-  const { link, nome, imagem_url } = req.body;
-  const sql = 'UPDATE projeto SET link = ?, nome = ?, imagem_url = ? WHERE id = ?';
-  db.query(sql, [link, nome, imagem_url, req.params.id], (err, results) => {
+  const { link, imagem_url } = req.body;
+  const sql = 'UPDATE projeto SET link = ?, imagem_url = ? WHERE id = ?';
+  db.query(sql, [link, imagem_url, req.params.id], (err, results) => {
     if (err) return res.status(500).send(err);
     if (results.affectedRows === 0) {
       return res.status(404).send({ mensagem: 'Projeto não encontrado.' });
     }
-    res.send({ id: req.params.id, link, nome, imagem_url });
+    res.send({ id: req.params.id, link, imagem_url });
   });
 });
 

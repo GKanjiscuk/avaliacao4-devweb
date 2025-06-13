@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="assets/css/habilidades.css" />
     <link rel="stylesheet" href="assets/css/footer.css" />
     <link rel="stylesheet" href="assets/css/edit.css" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
   </head>
   <body>
     <input
@@ -28,7 +29,7 @@
           </div>
           <nav class="direita">
             <ul onclick="getElementById('close-menu').checked=false;">
-              <li><a href="#inicio">Início</a></li>
+              <li><a href="index.html">Início</a></li>
               <li><a href="editar.html">Editar</a></li>
             </ul>
           </nav>
@@ -60,6 +61,13 @@
           <input type="text" id="hardskill-nome" required />
           <label for="hardskill-descricao">Descrição:</label>
           <textarea id="hardskill-descricao" rows="3" required></textarea>
+          <label for="hardskill-imagem">URL da Imagem da hardskill:</label>
+          <input
+            type="url"
+            id="hardskill-imagem"
+            placeholder="https://exemplo.com/imagem.png"
+          />
+
           <div class="botoes">
             <button type="submit" id="btn-save-hardskill">
               Adicionar/Salvar
@@ -136,6 +144,13 @@
             id="projeto-link"
             placeholder="https://exemplo.com/projeto"
             required
+          />
+
+          <label for="projeto-imagem">URL da Imagem:</label>
+          <input
+            type="url"
+            id="projeto-imagem"
+            placeholder="https://exemplo.com/imagem.png"
           />
           <div class="botoes">
             <button type="submit" id="btn-save-projeto">
